@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "sweep.h": "c",
+        "float.h": "c",
+        "cmath": "c",
+        "global.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
