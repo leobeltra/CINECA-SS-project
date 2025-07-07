@@ -10,7 +10,7 @@ CFLAGS = -O2 -std=c99 -g -Wall -I../include
 
 # Flags per file .cu
 NVCCFLAGS = -O2 -g -arch=sm_80 -Xcompiler "-Wall" -I../include
-LDFLAGS = -lm
+LDFLAGS = -lm -lcudart
 
 RANDOM = ranlxs ranlxd gauss
 
