@@ -1,10 +1,14 @@
 #ifndef SWEEP_2D_H
 #define SWEEP_2D_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#ifndef SWEEP_2D_C
-extern double sweep_2d(double r1[]);
+double sweep_2D(double r1[]);
 
+#ifdef __cplusplus
+}
 
 #endif
 #endif

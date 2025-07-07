@@ -1,10 +1,13 @@
 #ifndef SWEEP_ISING_2D_H
 #define SWEEP_ISING_2D_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#ifndef SWEEP_ISING_2D_C
-extern double sweep_ising_2D(double r[]);
+double sweep_ising_2D(double r[]);
 
-
+#ifdef __cplusplus
+}
 #endif
 #endif
