@@ -39,8 +39,7 @@
 #define beta 4.5
 
 /*lattice size*/
-#define N 64
-
+#define N 1024
 /*Monte Carlo steps - Markovian time*/
 #define M_sweep 1000
 
@@ -52,18 +51,18 @@
 
 /*lattices*/
 
-EXTERN double xx[N];
+// EXTERN double xx[N];
 
 
-EXTERN double yy[N];
+// EXTERN double yy[N];
 
 
-EXTERN double s[N];
+// EXTERN double s[N];
 
 
-EXTERN double ss[N][N];
+// EXTERN double ss[N][N];
 
-EXTERN double phi[N][N][N];
+// EXTERN double phi[N][N][N];
 
 
 /*EXTERN double sg[N][N][N];*/

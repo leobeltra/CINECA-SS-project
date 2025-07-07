@@ -7,7 +7,7 @@
 #include <math.h>
 #include "../../include/global.h"
 
-double H_Ising()
+double H_Ising(double** s)
 
 {
 

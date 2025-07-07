@@ -7,7 +7,7 @@
 #include <math.h>
 #include "../../include/global.h"
 
-double dH_ising_2D(double s_new, int i, int j)
+double dH_ising_2D(double s_new, int i, int j, double** ss)
 {
 
     double dH_B = 2*B_field*ss[i][j];

@@ -17,6 +17,13 @@ void print_info() {
 
 int main () {
 
+
+double **ss = (double**) calloc(N,sizeof(double*));
+for (int i = 0; i < N; i++) {
+    ss[i] = (double*) calloc(N,sizeof(double));
+}
+
+
     int block_dim = 4;
     int grid_dim = (N + block_dim - 1) / block_dim;
 
@@ -103,9 +110,9 @@ for (m=0; m<1000; m++)
           
     }*/
 
-    axc = sweep_ising_2D(r);
+    axc = sweep_ising_2D(r, ss);
 
-    fprintf(H_ising, "%f\n", H_Ising_2D());
+    fprintf(H_ising, "%f\n", H_Ising_2D(ss));
 
 }
 
@@ -118,7 +125,7 @@ while (Nbin*Dbin < M_sweep)
     {
         ranlxd(r,N*N);
 
-        axc=sweep_ising_2D(r);
+        axc=sweep_ising_2D(r, ss);
         acceptancy = acceptancy+axc;
 
         double c=0;

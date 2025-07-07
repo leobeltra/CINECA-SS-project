@@ -3,7 +3,7 @@
 
 
 #ifndef SWEEP_ISING_C
-extern double sweep_ising(double r[]);
+extern double sweep_ising(double r[], double ss[][]);
 
 
 #endif
