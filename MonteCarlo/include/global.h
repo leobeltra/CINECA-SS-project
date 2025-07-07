@@ -39,7 +39,7 @@
 #define beta 4.5
 
 /*lattice size*/
-#define N 64
+#define N 256
 
 /*Monte Carlo steps - Markovian time*/
 #define M_sweep 1000

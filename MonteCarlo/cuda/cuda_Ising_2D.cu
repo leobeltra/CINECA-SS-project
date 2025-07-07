@@ -18,7 +18,7 @@ void print_info() {
 int main () {
 
     int block_dim = 4;
-    int grid_dim = (N + block_dim - 1) / block_dim;
+    // int grid_dim = (N + block_dim - 1) / block_dim;
 
 
     print_info<<<1, block_dim>>>();
