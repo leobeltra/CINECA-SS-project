@@ -7,7 +7,7 @@
 #include <math.h>
 #include "../../include/global.h"
 
-double H_Ising_2D(double** ss)
+double H_Ising_2D(double* ss)
 {
 
     double H_B=0;
@@ -22,7 +22,7 @@ double H_Ising_2D(double** ss)
     {
         for (j = 0; j < N; j++)
         {
-            H_B=H_B+ss[i][j];
+            H_B=H_B+ss[i*N + j] ;
         }
     }
 
@@ -32,7 +32,7 @@ double H_Ising_2D(double** ss)
     {
         for (j = 0; j < N; j++)
         {
-            H_S_rows=H_S_rows+ss[i][j]*ss[i][(j+1)%N];
+            H_S_rows=H_S_rows+ss[i*N + j]*ss[i*N + (j+1)%N];
         }
 
     }
@@ -41,7 +41,7 @@ double H_Ising_2D(double** ss)
     {
         for (i = 0; i < N; i++)
         {
-            H_S_cols=H_S_cols+ss[i][j]*ss[(i+1)%N][j];
+            H_S_cols=H_S_cols+ss[i*N + j]*ss[((i+1)%N)*N+j];
         }
 
     }

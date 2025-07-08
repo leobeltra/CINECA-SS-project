@@ -3,7 +3,7 @@
 
 
 #ifndef DH_ISING_2D_C
-extern double dH_ising_2D(double s_new, int i, int j, ss[N][N]);
+extern double dH_ising_2D(double s_new, int i, int j, double** ss);
 
 
 #endif

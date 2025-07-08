@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-double sweep_ising_2D(double r[], double ss[][]);
+double sweep_ising_2D(double r[], double** ss);
 
 #ifdef __cplusplus
 }

@@ -6,8 +6,6 @@
 #include "../include/global.h"
 #include "../include/random.h"
 
-#include "../include/sweep_ising_2D.h"
-#include "../include/dH_ising_2D.h"
 #include "../include/H_ising_2D.h"
 
 // __global__ 
@@ -30,33 +28,47 @@ double dH_ising_2D(double s_new, int i, int j, double* ss)
 }
 
 __global__
-void sweep_dH(int i, double r[], double* ss, double accettanza) {
+void sweep_dH(int i, double* r, double* ss, double* accettanza) {
     int j = blockIdx.x * blockDim.x + threadIdx.x; // calculate the column index
-    double s_new = -ss[i*N + j]; // flip the spin
+    if (j < N) { // check bounds
+        double s_new = -ss[i*N + j]; // flip the spin
 
-    if(exp(-beta*dH_ising_2D(s_new,i,j, ss))>r[(N)*i+j])
-    {
+        if(exp(-beta*dH_ising_2D(s_new,i,j, ss))>r[(N)*i+j])
+        {
 
-        ss[i*N +j]=s_new;
-        accettanza = accettanza + 1;
-    } 
+            ss[i*N +j]=s_new;
+            *accettanza += 1.0; // increment the acceptance count
+        } 
+        // printf("i=%d j=%d accettanza=%f\n", i, j, *accettanza);
+    }    
 }
 
 __host__
-double sweep_ising_2D(double r[], double* ss) {
+double sweep_ising_2D(double* r, double* ss, double* accettanza) {
 
     double s_new;
-    double accettanza = 0;
     int i, j;
 
+    *accettanza = 0.0;
+
+    int blockSize = 32; // numero di thread per blocco
+    int gridSize = (N + blockSize - 1) / blockSize; // numero di blocchi per coprire N
 
     for(i=0; i<N; i++)
     {
-        sweep_dH<<<1,1>>>(i, r, ss, accettanza);
+        sweep_dH<<<gridSize,blockSize>>>(i, r, ss, accettanza);
+        cudaError_t err = cudaGetLastError();
+        if (err != cudaSuccess) {
+            printf("CUDA error after sweep_dH: %s\n", cudaGetErrorString(err));
+        }
     }
+    cudaDeviceSynchronize(); // Wait for the kernel to finish
 
-    accettanza = accettanza/(N*N);
-    return accettanza;
+
+    // printf("accettanza: %lf\n", *accettanza);
+
+    *accettanza = *accettanza/(N*N);
+    return *accettanza;
 }
 
 int main () {
@@ -114,7 +126,7 @@ if( H_ising==NULL ) {
 
 int m;
 int k;
-double r[N*N];
+double* r;
 double axc;
 int Nbin_max = 1000;        /*bin number*/
 int Dbin = 10;               /*bin size*/    
@@ -122,6 +134,10 @@ int t_markov;                /*markov time */
 int rows, cols;
 int Nbin;
 double acceptancy=0;
+
+double *accettanza;
+cudaMallocManaged(&accettanza, sizeof(double));
+cudaMallocManaged(&r, N * N * sizeof(double));
 
 double MAGNETIZATION[Nbin_max]; 
 
@@ -168,14 +184,15 @@ for (m=0; m<1000; m++)
           
     }*/
 
-    axc = sweep_ising_2D(r, ss);
+    axc = sweep_ising_2D(r, ss, accettanza);
     cudaDeviceSynchronize(); // Wait for the kernel to finish
 
-
+    printf("accettanza: %lf\n", axc);
     fprintf(H_ising, "%f\n", H_Ising_2D(ss)); 
 
 }
 
+printf("Accettanza finale: %lf\n", axc);
 
 
 while (Nbin*Dbin < M_sweep)
@@ -185,7 +202,7 @@ while (Nbin*Dbin < M_sweep)
     {
         ranlxd(r,N*N);
 
-        axc=sweep_ising_2D(r, ss);
+        axc=sweep_ising_2D(r, ss, accettanza);
         acceptancy = acceptancy+axc;
 
         double c=0;
