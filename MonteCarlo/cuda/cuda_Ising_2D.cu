@@ -10,26 +10,84 @@
 #include "../include/dH_ising_2D.h"
 #include "../include/H_ising_2D.h"
 
-__global__ 
-void print_info() {
-    printf("This is a CUDA kernel function.\n");
+// __global__ 
+// void print_info() {
+//     printf("This is a CUDA kernel function.\n");
+// }
+
+__device__
+double dH_ising_2D(double s_new, int i, int j, double* ss)
+{
+
+    double dH_B = 2*B_field*ss[i*N +j];
+
+    double dH_S = 2*J*ss[i*N +j]*(ss[i*N + ((j+1)%N)]  +ss[i*N+((j+N-1)%N)]   + ss[((i+1)%N)*N+j]  +   ss[((i+N-1)%N)*N+j]);
+
+    double dH_ising=dH_B+dH_S;
+
+    return dH_ising;
+
+}
+
+__global__
+void sweep_dH(int i, double r[], double* ss, double accettanza) {
+    int j = blockIdx.x * blockDim.x + threadIdx.x; // calculate the column index
+    double s_new = -ss[i*N + j]; // flip the spin
+
+    if(exp(-beta*dH_ising_2D(s_new,i,j, ss))>r[(N)*i+j])
+    {
+
+        ss[i*N +j]=s_new;
+        accettanza = accettanza + 1;
+    } 
+}
+
+__host__
+double sweep_ising_2D(double r[], double* ss) {
+
+    double s_new;
+    double accettanza = 0;
+    int i, j;
+
+
+    for(i=0; i<N; i++)
+    {
+        sweep_dH<<<1,1>>>(i, r, ss, accettanza);
+    }
+
+    accettanza = accettanza/(N*N);
+    return accettanza;
 }
 
 int main () {
 
+    cudaEvent_t start, stop;
+    float elapsedTime;
 
-double **ss = (double**) calloc(N,sizeof(double*));
-for (int i = 0; i < N; i++) {
-    ss[i] = (double*) calloc(N,sizeof(double));
-}
+    // Create events
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
+    // Record start event
+    cudaEventRecord(start, 0);
+
+double* ss;
+
+cudaMallocManaged(&ss, N * N * sizeof(double));
 
 
-    int block_dim = 4;
-    // int grid_dim = (N + block_dim - 1) / block_dim;
+// double *ss = (double**) calloc(N,sizeof(double*));
+// for (int i = 0; i < N; i++) {
+//     ss[i] = (double*) calloc(N,sizeof(double));
+// }
 
 
-    print_info<<<1, block_dim>>>();
-    cudaDeviceSynchronize();
+    // int block_dim = 4;
+    // // int grid_dim = (N + block_dim - 1) / block_dim;
+
+
+    // print_info<<<1, block_dim>>>();
+    // cudaDeviceSynchronize();
 
 /*Create file to record value of the magnetization*/
 FILE *magnetization;
@@ -84,9 +142,9 @@ for (rows=0; rows<N; rows++){
     {
         if (rows%2==0)
         {
-            ss[rows][cols] =1;
+            ss[rows*N + cols] =1;
         }
-        else ss[rows][cols] =-1;
+        else ss[rows*N + cols] =-1;
     }
 }
 
@@ -111,8 +169,10 @@ for (m=0; m<1000; m++)
     }*/
 
     axc = sweep_ising_2D(r, ss);
+    cudaDeviceSynchronize(); // Wait for the kernel to finish
 
-    fprintf(H_ising, "%f\n", H_Ising_2D(ss));
+
+    fprintf(H_ising, "%f\n", H_Ising_2D(ss)); 
 
 }
 
@@ -135,7 +195,7 @@ while (Nbin*Dbin < M_sweep)
 
             for (cols = 0; cols < N; cols++)
             {
-                c=c+ss[rows][cols];
+                c=c+ss[rows*N + cols];
             }
             
         }
@@ -154,7 +214,7 @@ for (rows = 0; rows < N ; rows++)
 {
     for (cols = 0; cols < N; cols++)
     {
-        fprintf(ising_state,"%lf ", ss[rows][cols]);
+        fprintf(ising_state,"%lf ", ss[rows*N + cols]);
     }
     fprintf(ising_state,"\n");
 }
@@ -167,11 +227,22 @@ for (Nbin = 0; Nbin < Nbin_max; Nbin++)
 double a = sinh(beta*B_field)+(sinh(beta*B_field)*cosh(beta*B_field))/(sqrt(sinh(beta*B_field)*sinh(beta*B_field)+exp(-4*beta*J)));
 double b = cosh(beta*B)+sqrt(exp(-4*beta*J)+sinh(beta*B_field)*sinh(beta*B_field));
 double magnetization_th = a/b;
-printf("theoretical average magnetization is %lf", magnetization_th);
+printf("theoretical average magnetization is %lf\n", magnetization_th);
 
 fclose(magnetization);
 fclose(H_ising);
 fclose(ising_state);
+
+    // Record stop event
+    cudaEventRecord(stop, 0);
+
+    // Wait for kernel & events to finish
+    cudaEventSynchronize(stop);
+
+    // Compute elapsed time in milliseconds
+    cudaEventElapsedTime(&elapsedTime, start, stop);
+
+    printf("Time: %f ms\n", elapsedTime);
 
 return 0;
 

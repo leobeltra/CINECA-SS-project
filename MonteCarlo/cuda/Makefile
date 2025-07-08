@@ -16,9 +16,9 @@ RANDOM = ranlxs ranlxd gauss
 
 START = start utils
 
-EXTRAS = dH_ising H_Ising sweep_ising sweep_ising_2D dH_ising_2D H_ising_2D
+EXTRAS = sweep_ising_2D dH_ising_2D H_ising_2D
 
-MONTECARLO = azione dazione sweep
+MONTECARLO = 
 
 CHECK = geometrize_corr_fun geometrize_V geometrize_T
 
@@ -26,7 +26,7 @@ JACKKNIFE =
 
 SCALAR_FIELD_THEORY = 
 
-BINNING = binned_correlation correlation
+BINNING = 
 
 MODULES = $(RANDOM) $(START) $(MONTECARLO) $(EXTRAS) $(CHECK) $(JACKKNIFE) $(SCALAR_FIELD_THEORY)
 
