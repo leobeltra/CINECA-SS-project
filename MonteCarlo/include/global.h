@@ -36,13 +36,13 @@
 /*Ising model parameters*/
 #define J 0.1
 #define B_field 0
-#define beta 4.5
+#define beta 1.5
 
 /*lattice size*/
 #define N 256
 
 /*Monte Carlo steps - Markovian time*/
-#define M_sweep 1000
+#define M_sweep 10000
 
 #if defined MAIN_PROGRAM
   #define EXTERN

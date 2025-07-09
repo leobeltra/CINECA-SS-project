@@ -76,7 +76,7 @@ for (rows=0; rows<N; rows++){
         else ss[rows][cols] =-1;
     }
 }
-
+// THERMALIZATION OF MARKOV CHAIN
 
 for (m=0; m<1000; m++)
 {
@@ -104,7 +104,7 @@ for (m=0; m<1000; m++)
 }
 
 
-
+// ACTUAL METROPOLIS SWEEP
 while (Nbin*Dbin < M_sweep)
 {                       
 
@@ -135,7 +135,7 @@ while (Nbin*Dbin < M_sweep)
     Nbin=Nbin+1;     
 }
 
-printf("%lf\n", acceptancy/(double)M_sweep);
+printf("MCMC acceptancy is: %lf\n", acceptancy/(double)M_sweep);
 
 for (rows = 0; rows < N ; rows++)
 {
@@ -154,7 +154,7 @@ for (Nbin = 0; Nbin < Nbin_max; Nbin++)
 double a = sinh(beta*B_field)+(sinh(beta*B_field)*cosh(beta*B_field))/(sqrt(sinh(beta*B_field)*sinh(beta*B_field)+exp(-4*beta*J)));
 double b = cosh(beta*B)+sqrt(exp(-4*beta*J)+sinh(beta*B_field)*sinh(beta*B_field));
 double magnetization_th = a/b;
-printf("theoretical average magnetization is %lf", magnetization_th);
+/*printf("theoretical average magnetization is %lf", magnetization_th);*/
 
 fclose(magnetization);
 fclose(H_ising);
