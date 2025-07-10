@@ -16,17 +16,17 @@ RANDOM = ranlxs ranlxd gauss
 
 START = start utils
 
-EXTRAS = dazione_an azione_anharmonic sweep_an_creutz dazione_an_creutz azione_anharmonic_creutz dazione_2d dazione_2d_an sweep_2d d_azione_klauder dH_ising H_Ising sweep_ising sweep_ising_2D dH_ising_2D H_ising_2D
+EXTRAS = sweep_ising_2D dH_ising_2D H_ising_2D
 
-MONTECARLO = azione dazione sweep
+MONTECARLO = 
 
 CHECK = geometrize_corr_fun geometrize_V geometrize_T
 
 JACKKNIFE = 
 
-SCALAR_FIELD_THEORY = sweep_scalar_field scalar_field_action
+SCALAR_FIELD_THEORY = 
 
-BINNING = binned_correlation correlation
+BINNING = 
 
 MODULES = $(RANDOM) $(START) $(MONTECARLO) $(EXTRAS) $(CHECK) $(JACKKNIFE) $(SCALAR_FIELD_THEORY)
 

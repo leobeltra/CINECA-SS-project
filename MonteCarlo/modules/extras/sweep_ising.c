@@ -10,7 +10,7 @@
 #include "../../include/global.h"
 #include "../../include/dH_ising.h"
 
-double sweep_ising(double r[]) {
+double sweep_ising(double r[], double** s) {
 
     double s_new;
     double accettanza = 0;
@@ -21,7 +21,7 @@ double sweep_ising(double r[]) {
            
         s_new = -s[i];
 
-        if(exp(-beta*dH_ising(s_new,i))>r[i]){
+        if(exp(-beta*dH_ising(s_new,i, s))>r[i]){
 
             s[i]=s_new;
             accettanza = accettanza + 1;

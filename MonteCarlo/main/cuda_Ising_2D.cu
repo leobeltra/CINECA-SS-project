@@ -12,6 +12,12 @@
 
 int main () {
 
+
+double *ss = (double**) calloc(N,sizeof(double*));
+for (int i = 0; i < N; i++) {
+    ss[i] = (double*) calloc(N,sizeof(double));
+}
+
 /*Create file to record value of the magnetization*/
 FILE *magnetization;
 magnetization=fopen("../../data_analysis/Ising/magnetization_2D.txt","wt");
@@ -70,7 +76,7 @@ for (rows=0; rows<N; rows++){
         else ss[rows][cols] =-1;
     }
 }
-
+// THERMALIZATION OF MARKOV CHAIN
 
 for (m=0; m<1000; m++)
 {
@@ -91,14 +97,14 @@ for (m=0; m<1000; m++)
           
     }*/
 
-    axc = sweep_ising_2D(r);
+    axc = sweep_ising_2D(r, ss);
 
-    fprintf(H_ising, "%f\n", H_Ising_2D());
+    fprintf(H_ising, "%f\n", H_Ising_2D(ss));
 
 }
 
 
-
+// ACTUAL METROPOLIS SWEEP
 while (Nbin*Dbin < M_sweep)
 {                       
 
@@ -106,7 +112,7 @@ while (Nbin*Dbin < M_sweep)
     {
         ranlxd(r,N*N);
 
-        axc=sweep_ising_2D(r);
+        axc=sweep_ising_2D(r, ss);
         acceptancy = acceptancy+axc;
 
         double c=0;
@@ -129,7 +135,7 @@ while (Nbin*Dbin < M_sweep)
     Nbin=Nbin+1;     
 }
 
-printf("%lf\n", acceptancy/(double)M_sweep);
+printf("MCMC acceptancy is: %lf\n", acceptancy/(double)M_sweep);
 
 for (rows = 0; rows < N ; rows++)
 {
@@ -148,7 +154,7 @@ for (Nbin = 0; Nbin < Nbin_max; Nbin++)
 double a = sinh(beta*B_field)+(sinh(beta*B_field)*cosh(beta*B_field))/(sqrt(sinh(beta*B_field)*sinh(beta*B_field)+exp(-4*beta*J)));
 double b = cosh(beta*B)+sqrt(exp(-4*beta*J)+sinh(beta*B_field)*sinh(beta*B_field));
 double magnetization_th = a/b;
-printf("theoretical average magnetization is %lf", magnetization_th);
+/*printf("theoretical average magnetization is %lf", magnetization_th);*/
 
 fclose(magnetization);
 fclose(H_ising);

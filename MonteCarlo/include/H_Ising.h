@@ -3,7 +3,7 @@
 
 
 #ifndef H_ISING_C
-extern double H_Ising();
+extern double H_Ising(double ss[][]);
 
 
 #endif

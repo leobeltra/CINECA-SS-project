@@ -12,6 +12,12 @@
 
 int main () {
 
+double **ss = (double**) calloc(N,sizeof(double*));
+for (int i = 0; i < N; i++) {
+    ss[i] = (double*) calloc(N,sizeof(double));
+}
+
+
 /*Create file to record value of the magnetization*/
 FILE *magnetization;
 magnetization=fopen("../../data_analysis/Ising/magnetization_2D.txt","wt");
