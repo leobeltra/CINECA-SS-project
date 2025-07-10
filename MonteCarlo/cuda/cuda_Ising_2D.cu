@@ -107,6 +107,8 @@ cudaMallocManaged(&ss_b, N * N * sizeof(double) / 2);
     // print_info<<<1, block_dim>>>();
     // cudaDeviceSynchronize();
 
+    
+
 /*Create file to record value of the magnetization*/
 FILE *magnetization;
 magnetization=fopen("../../data_analysis/Ising/magnetization_2D.txt","wt");

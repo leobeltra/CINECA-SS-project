@@ -19,7 +19,7 @@ all: rmxeq mkdep mkxeq
 
 # main programs and required modules 
 
-MAIN = corr_fun osservabili osservabili_armonic termalization binning_deco ground_state autocorrelation corr_fun_anarmonica ground_state_an_creutz GS_harm_2d GS_dwell corr_fun_Hermite2 autocorrelation_C_binned Ising_1D Ising_2D Spin_Glass scalar_field
+MAIN = corr_fun osservabili osservabili_armonic termalization binning_deco ground_state autocorrelation corr_fun_anarmonica ground_state_an_creutz GS_harm_2d GS_dwell corr_fun_Hermite2 autocorrelation_C_binned Ising_1D Ising_2D Spin_Glass scalar_field Ising_2D_serial
 
 RANDOM = ranlxs ranlxd gauss
 

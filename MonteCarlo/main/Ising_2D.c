@@ -26,17 +26,17 @@ if( magnetization==NULL ) {
     exit(1);
 }
 
-FILE *ising_state;
-ising_state=fopen("../../data_analysis/Ising/ising_state.txt","wt");
-if( ising_state==NULL ) {
+FILE *issing_state;
+issing_state=fopen("../../data_analysis/Ising/issing_state.txt","wt");
+if( issing_state==NULL ) {
     perror("Error in opening file");
     exit(1);
 }
 
 /*Create file to record value of the Ising hamitonian*/
-FILE *H_ising;
-H_ising=fopen("../../data_analysis/Ising/H_ising_2D.txt","wt");
-if( H_ising==NULL ) {
+FILE *H_issing;
+H_issing=fopen("../../data_analysis/Ising/H_issing_2D.txt","wt");
+if( H_issing==NULL ) {
     perror("Error in opening file");
     exit(1);
 }
@@ -56,8 +56,6 @@ double MAGNETIZATION[Nbin_max];
 
 /*double **couplings =(double**) calloc(N);*/
 
-double couplings[2*N][2*N]; 
-
 /*Flat random distribution init*/
 rlxd_init(1,263);
 
@@ -69,13 +67,11 @@ for (rows=0; rows<N; rows++){
 
     for (cols = 0; cols < N; cols++)
     {
-        if (rows%2==0)
-        {
-            ss[rows][cols] =1;
-        }
-        else ss[rows][cols] =-1;
+        ss[rows][cols] = (rand() % 2 == 0) ? 1.0 : -1.0; 
+    
     }
 }
+
 
 
 for (m=0; m<1000; m++)
@@ -99,16 +95,16 @@ for (m=0; m<1000; m++)
 
     axc = sweep_ising_2D(r);
 
-    fprintf(H_ising, "%f\n", H_Ising_2D());
+    fprintf(H_issing, "%f\n", H_issing_2D());
 
 }
 
 
 
-while (Nbin*Dbin < M_sweep)
-{                       
+/*while (Nbin*Dbin < M_sweep)
+{*/                       
 
-    for ( t_markov=Nbin*Dbin ; t_markov < (Nbin+1)*Dbin; t_markov++) 
+    for ( t_markov=0 ; t_markov < M_sweep; t_markov++) 
     {
         ranlxd(r,N*N);
 
@@ -132,18 +128,18 @@ while (Nbin*Dbin < M_sweep)
         MAGNETIZATION[Nbin] = MAGNETIZATION[Nbin]+c; 
     }
 
-    Nbin=Nbin+1;     
-}
+    /*Nbin=Nbin+1;     
+}*/
 
-printf("%lf\n", acceptancy/(double)M_sweep);
+printf("acceptancy is: %lf\n", acceptancy/(double)M_sweep);
 
 for (rows = 0; rows < N ; rows++)
 {
     for (cols = 0; cols < N; cols++)
     {
-        fprintf(ising_state,"%lf ", ss[rows][cols]);
+        fprintf(issing_state,"%lf ", ss[rows][cols]);
     }
-    fprintf(ising_state,"\n");
+    fprintf(issing_state,"\n");
 }
 
 for (Nbin = 0; Nbin < Nbin_max; Nbin++)
@@ -154,11 +150,11 @@ for (Nbin = 0; Nbin < Nbin_max; Nbin++)
 double a = sinh(beta*B_field)+(sinh(beta*B_field)*cosh(beta*B_field))/(sqrt(sinh(beta*B_field)*sinh(beta*B_field)+exp(-4*beta*J)));
 double b = cosh(beta*B)+sqrt(exp(-4*beta*J)+sinh(beta*B_field)*sinh(beta*B_field));
 double magnetization_th = a/b;
-printf("theoretical average magnetization is %lf", magnetization_th);
+/*printf("theoretical average magnetization is %lf", magnetization_th);*/
 
 fclose(magnetization);
-fclose(H_ising);
-fclose(ising_state);
+fclose(H_issing);
+fclose(issing_state);
 
 return 0;
 
