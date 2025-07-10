@@ -6,7 +6,9 @@
 extern "C" {
 #endif
 
-double H_Ising_2D(void);
+double H_ising_2D(double* ss);
+
+double H_issing_2D();
 
 #ifdef __cplusplus
 }

@@ -39,10 +39,10 @@
 #define beta 4.5
 
 /*lattice size*/
-#define N 256
+#define N 512
 
 /*Monte Carlo steps - Markovian time*/
-#define M_sweep 1000
+#define M_sweep 10000
 
 #if defined MAIN_PROGRAM
   #define EXTERN
