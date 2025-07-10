@@ -20,9 +20,9 @@ double H_Ising_2D(double* ss)
 
     for ( i = 0; i < N; i++)
     {
-        for (j = 0; j < N; j++)
+        for (j = 0; j < N/2; j++)
         {
-            H_B=H_B+ss[i*N + j] ;
+            H_B=H_B+ss[i*(N/2) + j] ;
         }
     }
 
@@ -30,18 +30,18 @@ double H_Ising_2D(double* ss)
 
     for (i = 0; i < N; i++)
     {
-        for (j = 0; j < N; j++)
+        for (j = 0; j < N/2; j++)
         {
-            H_S_rows=H_S_rows+ss[i*N + j]*ss[i*N + (j+1)%N];
+            H_S_rows=H_S_rows+ss[i*(N/2) + j]*ss[i*(N/2) + (j+1)%N/2];
         }
 
     }
 
-    for (j = 0; j < N; j++)
+    for (j = 0; j < N/2; j++)
     {
         for (i = 0; i < N; i++)
         {
-            H_S_cols=H_S_cols+ss[i*N + j]*ss[((i+1)%N)*N+j];
+            H_S_cols=H_S_cols+ss[i*(N/2) + j]*ss[((i+1)%N)*(N/2)+j];
         }
 
     }
