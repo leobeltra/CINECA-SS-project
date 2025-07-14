@@ -22,7 +22,8 @@ double sweep_ising_2D_b(double* r_b, double* ss_w, double* ss_b) {
         {
             double dH_B = 2*B_field*ss_b[i*N/2+j];
 
-            double dH_S = 2*J*ss_b[i*(N/2)+j]*(ss_w[i*N/2 + ((j+1)%(N/2))]  +ss_w[i*(N/2)+((j+(N/2)-1)%(N/2))]   + ss_w[((i+1)%N)*(N/2)+j]  +   ss_w[((i+N-1)%N)*(N/2)+j]);
+            double dH_S = 2*J*ss_b[i*(N/2)+j]*(ss_w[i*N/2 + ((j+1)%(N/2))]  + ss_w[i*(N/2)+((j+(N/2)-1)%(N/2))]   
+                + ss_w[((i+1)%N)*(N/2)+j]  +   ss_w[((i+N-1)%N)*(N/2)+j]);
 
             double dH_ising=dH_B+dH_S;
 
@@ -97,7 +98,7 @@ if( magnetization==NULL ) {
 }
 
 FILE *ising_state;
-ising_state=fopen("../../data_analysis/Ising/ising_state.txt","wt");
+ising_state=fopen("../../data_analysis/Ising/issing_state.txt","wt");
 if( ising_state==NULL ) {
     perror("Error in opening file");
     exit(1);
@@ -105,7 +106,7 @@ if( ising_state==NULL ) {
 
 /*Create file to record value of the Ising hamitonian*/
 FILE *H_ising;
-H_ising=fopen("../../data_analysis/Ising/H_ising_2D.txt","wt");
+H_ising=fopen("../../data_analysis/Ising/H_issing_2D.txt","wt");
 if( H_ising==NULL ) {
     perror("Error in opening file");
     exit(1);
@@ -144,7 +145,7 @@ for (rows=0; rows<N; rows++){
 }
 
 /*THERMALIZATION OF THE MARKOV CHAIN*/
-for (m=0; m<1000; m++)
+for (m=0; m<10000; m++)
 {
     /* printf("Thermalization step %d\n", m); */
     /*randomize vector r to be used in the Metropolis trials*/
@@ -186,6 +187,7 @@ printf("Accettanza finale: %lf\n", axc);
         ranlxd(r_b,N*(N/2));
 
         axc = sweep_ising_2D_b(r_b, ss_w, ss_b);
+        
         axc += sweep_ising_2D_w(r_w, ss_w, ss_b);
 
         acceptancy = acceptancy + axc;

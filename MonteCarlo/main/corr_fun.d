@@ -1,2 +1,0 @@
-corr_fun.o: corr_fun.c ../include/global.h ../include/sweep.h \
- ../include/random.h ../include/dazione.h ../include/azione.h
