@@ -54,6 +54,7 @@ double H_ising_2D(double* ss)
 
 }
 
+/*
 double H_issing_2D()
 {
 
@@ -63,7 +64,7 @@ double H_issing_2D()
 
     double H_S_rows=0;
     double H_S_cols=0;
-    /*this must be at least in main */
+    /*this must be at least in main
 
     for ( i = 0; i < N; i++)
     {
@@ -100,3 +101,4 @@ double H_issing_2D()
     return H_ising;
 
 }
+*/

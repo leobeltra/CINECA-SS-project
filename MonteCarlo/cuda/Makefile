@@ -9,7 +9,7 @@ NVCC = nvcc
 CFLAGS = -O2 -std=c99 -g -Wall -I../include
 
 # Flags per file .cu
-NVCCFLAGS = -O2 -g -arch=sm_80 -Xcompiler "-Wall" -I../include
+NVCCFLAGS = -O2 -g -arch=sm_80 -Xcompiler="-fopenmp, -Wall" -I../include
 LDFLAGS = -lm -lcudart
 
 RANDOM = ranlxs ranlxd gauss

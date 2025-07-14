@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 #include "../include/global.h"
 #include "../include/random.h"
 
@@ -77,6 +78,11 @@ double sweep_ising_2D_w(double* r_w, double* ss_w, double* ss_b) {
 
 
 int main () {
+
+        clock_t start, end;
+    double cpu_time_used;
+
+    start = clock();    
 
 double *ss_w= (double*) calloc ((N*N)/2, sizeof(double));
 double *ss_b= (double*) calloc ((N*N)/2, sizeof(double));
@@ -217,6 +223,12 @@ printf("End of the program\n");
 fclose(magnetization);
 fclose(H_ising);
 fclose(ising_state);
+
+    end = clock();
+
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+    printf("Total execution time: %f seconds\n", cpu_time_used);
 
 return 0;
 

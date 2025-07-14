@@ -89,6 +89,11 @@ void sweep_ising_2D_w(double* r, double* ss_w, double* ss_b, double* accettanza)
 int main () 
 {
 
+    clock_t start, end;
+    double cpu_time_used;
+
+    start = clock();    
+
 double* ss_b, *ss_w;
 
 cudaMallocManaged(&ss_w, N * N * sizeof(double) / 2);
@@ -164,13 +169,13 @@ for (rows=0; rows<N; rows++){
 
     for (cols = 0; cols < N/2; cols++)
     {
-        ss_w[rows*(N/2)+cols] = 1.0;
+        ss_w[rows*(N/2)+cols] = (rand() % 2 == 0) ? 1.0 : -1.0;
         ss_b[rows*(N/2)+cols] = (rand() % 2 == 0) ? 1.0 : -1.0; 
     
     }
 }
 
-dim3 block_dim(32, 32);
+dim3 block_dim(8, 8);
 dim3 grid_dim((N/2 + block_dim.x - 1)/block_dim.x,
               (N   + block_dim.y - 1)/block_dim.y);
 //THERMALIZATION OF THE MARKOV CHAIN
@@ -205,7 +210,7 @@ for (m=0; m<1000; m++)
 
 
     //printf("thermalization acceptancy: %lf\n", *accettanza);
-    fprintf(H_ising, "%f\n", H_Ising_2D(ss_b)+H_Ising_2D(ss_w)); 
+    fprintf(H_ising, "%f\n", H_ising_2D(ss_b)+H_ising_2D(ss_w)); 
 }
 
 printf("Accettanza finale: %lf\n", *accettanza);
@@ -248,10 +253,10 @@ for (rows = 0; rows < N ; rows++)
     fprintf(ising_state,"\n");
 }
 
-for (Nbin = 0; Nbin < Nbin_max; Nbin++)
-{
-    fprintf(magnetization, "%lf\n", MAGNETIZATION[Nbin]/(double)Dbin);
-}
+// for (Nbin = 0; Nbin < Nbin_max; Nbin++)
+// {
+//     fprintf(magnetization, "%lf\n", MAGNETIZATION[Nbin]/(double)Dbin);
+// }
 
 //double a = sinh(beta*B_field)+(sinh(beta*B_field)*cosh(beta*B_field))/(sqrt(sinh(beta*B_field)*sinh(beta*B_field)+exp(-4*beta*J)));
 //double b = cosh(beta*B)+sqrt(exp(-4*beta*J)+sinh(beta*B_field)*sinh(beta*B_field));
@@ -267,6 +272,12 @@ cudaFree(ss_w);
 cudaFree(r_b);
 cudaFree(r_w);
 cudaFree(accettanza);
+
+    end = clock();
+
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+    printf("Total execution time: %f seconds\n", cpu_time_used);
 
 return 0;
 
