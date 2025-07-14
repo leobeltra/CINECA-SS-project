@@ -175,11 +175,11 @@ for (rows=0; rows<N; rows++){
     }
 }
 
-dim3 block_dim(8, 8);
+dim3 block_dim(32, 32);
 dim3 grid_dim((N/2 + block_dim.x - 1)/block_dim.x,
               (N   + block_dim.y - 1)/block_dim.y);
 //THERMALIZATION OF THE MARKOV CHAIN
-for (m=0; m<1000; m++)
+for (m=0; m<10000; m++)
 {
 
     /*randomize vector r to be used in the Metropolis trials*/
