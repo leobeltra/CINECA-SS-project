@@ -93,9 +93,9 @@ for (m=0; m<1000; m++)
           
     }*/
 
-    axc = sweep_ising_2D(r);
+    axc = sweep_ising_2D(r, ss);
 
-    fprintf(H_issing, "%f\n", H_issing_2D());
+    fprintf(H_issing, "%f\n", H_ising_2D(ss));
 
 }
 
@@ -108,7 +108,7 @@ for (m=0; m<1000; m++)
     {
         ranlxd(r,N*N);
 
-        axc=sweep_ising_2D(r);
+        axc=sweep_ising_2D(r, ss);
         acceptancy = acceptancy+axc;
 
         double c=0;

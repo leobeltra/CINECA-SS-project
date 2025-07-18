@@ -6,10 +6,10 @@ CC = nvc
 NVCC = nvcc
 
 # Flags per file .c
-CFLAGS = -O2 -std=c99 -g -Wall -I../include
+CFLAGS = -O3 -std=c99 -g -Wall -I../include
 
 # Flags per file .cu
-NVCCFLAGS = -O2 -g -arch=sm_80 -Xcompiler="-fopenmp, -Wall" -I../include
+NVCCFLAGS = -O3 -g -arch=sm_80 -Xcompiler="-fopenmp, -Wall" -I../include
 LDFLAGS = -lm -lcudart
 
 RANDOM = ranlxs ranlxd gauss
@@ -38,7 +38,7 @@ VPATH = $(MDIR)/random:$(MDIR)/start:$(MDIR)/extras:$(MDIR)/montecarlo:$(MDIR)/c
 
 OBJECTS = $(addsuffix .o, $(MODULES))
 
-TARGET = cuda_Ising_2D
+TARGET = cuda_Ising_checkerboard
 
 all: $(TARGET)
 

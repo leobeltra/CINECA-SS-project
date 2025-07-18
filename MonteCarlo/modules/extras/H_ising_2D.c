@@ -7,7 +7,7 @@
 #include <math.h>
 #include "../../include/global.h"
 
-double H_ising_2D(double* ss)
+double H_issing_2D(double* ss)
 {
 
     double H_B=0;
@@ -20,9 +20,9 @@ double H_ising_2D(double* ss)
 
     for ( i = 0; i < N; i++)
     {
-        for (j = 0; j < N/2; j++)
+        for (j = 0; j < N; j++)
         {
-            H_B=H_B+ss[i*(N/2)+j];
+            H_B=H_B+ss[i*N+j];
         }
     }
 
@@ -30,18 +30,18 @@ double H_ising_2D(double* ss)
 
     for (i = 0; i < N; i++)
     {
-        for (j = 0; j < N/2; j++)
+        for (j = 0; j < N; j++)
         {
-            H_S_rows=H_S_rows+ss_b[i*(N/2)+j]*ss_w[i*(N/2)+((j)%(N/2))];
+            H_S_rows=H_S_rows+ss[i*N+j]*ss[i*N + (j+1)%N];
         }
 
     }
 
-    for (j = 0; j < N/2; j++)
+    for (j = 0; j < N; j++)
     {
         for (i = 0; i < N; i++)
         {
-            H_S_cols=H_S_cols+ss_b[i*(N/2)+j]*ss_w[((i)%N)*(N/2) + j];
+            H_S_cols=H_S_cols+ss[i*N+j]*ss[(i+1)%N*(N) + j];
         }
 
     }
@@ -53,8 +53,9 @@ double H_ising_2D(double* ss)
     return H_ising;
 
 }
+
+
 /*versione con double pointer per Ising_checkerboard*/
-/*
 double H_ising_2D(double** ss)
 {
     double H_B=0;
@@ -98,7 +99,7 @@ double H_ising_2D(double** ss)
     return H_ising;
 
 }
-*/
+
 
 
 

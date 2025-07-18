@@ -55,7 +55,7 @@
 /* EXTERN double xx[N]; */
 
 
-/* EXTERN double yy[N] */;
+/* EXTERN double yy[N]; */
 
 
 /* EXTERN double s[N]; */

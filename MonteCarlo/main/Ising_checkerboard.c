@@ -103,7 +103,6 @@ for (int i = 0; i < N; i++)
     r[i] = (double*) calloc(N,sizeof(double));
 }
 
-printf("hello world\n");
 FILE *magnetization;
 magnetization=fopen("../../data_analysis/Ising/magnetization_2D.txt","wt");
 if( magnetization==NULL ) {
@@ -149,8 +148,8 @@ for (rows=0; rows<N; rows++){
 
     for (cols = 0; cols < N; cols++)
     {
-        ss[rows][cols] = 1;
-    }
+        ss[rows][cols] = (rand() % 2 == 0) ? 1.0 : -1.0; 
+        }
 }
 
 printf("initial energy is %f\n", H_ising_2D(ss)); 
