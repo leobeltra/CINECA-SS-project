@@ -1,56 +1,43 @@
-# CUDA Makefile using nvc for .cu
-
 # Compilatori
-GCC = gcc         
+GCC = gcc
 CC = nvc
 NVCC = nvcc
 
-# Flags per file .c
+# Flags
 CFLAGS = -O3 -std=c99 -g -Wall -I../include
-
-# Flags per file .cu
-NVCCFLAGS = -O3 -g -arch=sm_80 -Xcompiler="-fopenmp, -Wall" -I../include
+NVCCFLAGS = -O3 -g -arch=sm_80 -Xcompiler="-Wall" -I../include
 LDFLAGS = -lm -lcudart
 
+# Sorgenti comuni
 RANDOM = ranlxs ranlxd gauss
-
 START = start utils
-
 EXTRAS = sweep_ising_2D dH_ising_2D H_ising_2D
-
-MONTECARLO = 
-
 CHECK = geometrize_corr_fun geometrize_V geometrize_T
 
-JACKKNIFE = 
-
-SCALAR_FIELD_THEORY = 
-
-BINNING = 
-
-MODULES = $(RANDOM) $(START) $(MONTECARLO) $(EXTRAS) $(CHECK) $(JACKKNIFE) $(SCALAR_FIELD_THEORY)
-
-# search path for modules
-
+MODULES = $(RANDOM) $(START) $(EXTRAS) $(CHECK)
 MDIR = ../modules
-
-VPATH = $(MDIR)/random:$(MDIR)/start:$(MDIR)/extras:$(MDIR)/montecarlo:$(MDIR)/check:$(MDIR)/jackknife:$(MDIR)/scalar_field_theory
+VPATH = $(MDIR)/random:$(MDIR)/start:$(MDIR)/extras:$(MDIR)/check
 
 OBJECTS = $(addsuffix .o, $(MODULES))
 
-TARGET = cuda_Ising_checkerboard
+# Lista degli eseguibili
+EXECUTABLES = cuda_Ising_checkerboard cuda_Ising_2D.cu Ising_2d.cu 
 
-all: $(TARGET)
+# Regola di default
+all: $(EXECUTABLES)
 
-# Compilazione moduli C con GCC
+# Regola per ogni eseguibile (automaticamente usa .cu se esiste, altrimenti .c)
+#%: %.o $(OBJECTS)
+#	$(NVCC) $^ -o $@ $(LDFLAGS)
+
+# Compilazione moduli C
 %.o: %.c
 	$(GCC) $(CFLAGS) -c $< -o $@
 
+# Compilazione moduli CUDA
 %.o: %.cu
 	$(NVCC) $(NVCCFLAGS) -c $< -o $@
 
-$(TARGET): $(TARGET).o $(OBJECTS)
-	$(NVCC) $(NVCCFLAGS) $(TARGET).o $(OBJECTS) $(LDFLAGS) -o $@
-
+# Pulizia
 clean:
-	rm -f *.o *.mod $(TARGET)
+	rm -f *.o $(EXECUTABLES)
