@@ -11,3 +11,7 @@ typedef float real_t;
 #define DEBUG false
 
 #define RUN_CPU false
+
+#ifndef NUM_EXE_TO_MEASURE
+#define NUM_EXE_TO_MEASURE 10
+#endif

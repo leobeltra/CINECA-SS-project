@@ -44,46 +44,71 @@ int main(int argc, char *argv[]) {
     cudaMallocHost(&cpu_acceptancy, sizeof(real_t));
     cudaMallocHost(&gpu_acceptancy, sizeof(real_t));
 
-    // Initialize spins randomly
-    for (int i = 0; i < N * N; i++) {
-        spins[i] = (rand() % 2 == 0) ? 1.0 : -1.0;
-    }
+    double cpu_time_total = 0.0;
+    double gpu_time_total = 0.0;
 
-// Time CPU implementation
+    // Run simulations multiple times to get average performance
+    for (int run = 0; run < 1 + NUM_EXE_TO_MEASURE; run++) {
+        std::cout << "Run " << run << (run == 0 ? " (warmup)" : "") << std::endl;
+
+        // Initialize spins randomly
+        for (int i = 0; i < N * N; i++) {
+            spins[i] = (rand() % 2 == 0) ? 1.0 : -1.0;
+        }
+
+        // Time CPU implementation
 #if RUN_CPU
-    double cpu_time = 0.0;
-    {
-        auto start = std::chrono::high_resolution_clock::now();
+        {
+            auto start = std::chrono::high_resolution_clock::now();
 
-        // Call CPU implementation with new parameters
-        simulate_ising_cpu(spins, cpu_result, N, equil_steps, M_sweep, beta, J, B_field,
-                           cpu_acceptancy);
+            // Call CPU implementation with new parameters
+            simulate_ising_cpu(spins, cpu_result, N, equil_steps, M_sweep, beta, J, B_field,
+                               cpu_acceptancy);
 
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> elapsed = end - start;
-        cpu_time = elapsed.count();
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> elapsed = end - start;
 
-        std::cout << std::fixed << std::setprecision(4);
-        std::cout << "CPU implementation took " << cpu_time << " seconds" << std::endl;
-        std::cout << "CPU acceptancy rate: " << *cpu_acceptancy << std::endl;
-    }
+            if (run > 0) { // Skip first run when calculating average
+                cpu_time_total += elapsed.count();
+            }
+
+            if (run == NUM_EXE_TO_MEASURE) { // Only print for the last run
+                std::cout << std::fixed << std::setprecision(4);
+                std::cout << "CPU acceptancy rate: " << *cpu_acceptancy << std::endl;
+            }
+        }
 #endif
-    // Time GPU implementation
-    double gpu_time = 0.0;
-    {
-        auto start = std::chrono::high_resolution_clock::now();
+        // Time GPU implementation
+        {
+            auto start = std::chrono::high_resolution_clock::now();
 
-        // Call GPU implementation with new parameters
-        simulate_ising_gpu(spins, gpu_result, N, equil_steps, M_sweep, beta, J, B_field,
-                           gpu_acceptancy);
+            // Call GPU implementation with new parameters
+            simulate_ising_gpu(spins, gpu_result, N, equil_steps, M_sweep, beta, J, B_field,
+                               gpu_acceptancy);
 
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> elapsed = end - start;
-        gpu_time = elapsed.count();
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> elapsed = end - start;
 
-        std::cout << "GPU implementation took " << gpu_time << " seconds" << std::endl;
-        std::cout << "GPU acceptancy rate: " << *gpu_acceptancy << std::endl;
+            if (run > 0) { // Skip first run when calculating average
+                gpu_time_total += elapsed.count();
+            }
+
+            if (run == NUM_EXE_TO_MEASURE) { // Only print for the last run
+                std::cout << "GPU acceptancy rate: " << *gpu_acceptancy << std::endl;
+            }
+        }
     }
+
+    // Calculate average times
+    double cpu_time = cpu_time_total / NUM_EXE_TO_MEASURE;
+    double gpu_time = gpu_time_total / NUM_EXE_TO_MEASURE;
+
+    std::cout << "\nPerformance results (averaged over " << NUM_EXE_TO_MEASURE
+              << " runs):" << std::endl;
+#if RUN_CPU
+    std::cout << "CPU implementation took " << cpu_time << " seconds (avg)" << std::endl;
+#endif
+    std::cout << "GPU implementation took " << gpu_time << " seconds (avg)" << std::endl;
 
     // Calculate magnetization from final state
     double cpu_magnetization = 0.0;

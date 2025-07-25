@@ -1,4 +1,4 @@
-#include "gpu.h"
+#include "../gpu.h"
 #include <cuda_runtime.h>
 #if DEBUG
 #include <iostream>
