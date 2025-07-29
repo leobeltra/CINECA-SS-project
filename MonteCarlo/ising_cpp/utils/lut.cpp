@@ -2,8 +2,8 @@
 #include "lut.h"
 
 template <int NumNeighbours, typename T = double>
-constexpr std::array<double, NumNeighbours> getProbabilityLUT(T J, T B_field, T beta) {
-    std::array<double, NumNeighbours> lut;
+constexpr std::array<double, 2 * NumNeighbours> getProbabilityLUT(T J, T B_field, T beta) {
+    std::array<double, 2 * NumNeighbours> lut;
     std::size_t lut_idx = 0;
 
     // All values of current_spin

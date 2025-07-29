@@ -5,18 +5,6 @@
 #include <stdio.h>
 #endif
 
-// #define     CUDA_SAFE_CALL(call)                                                                       \
-//     {                                                                                              \
-//         call;                                                                                      \
-//         cudaDeviceSynchronize();                                                                   \
-//         cudaError_t err = cudaGetLastError();                                                      \
-//         if (err != cudaSuccess) {                                                                  \
-//             fprintf(stderr, "CUDA error in %s at %s:%d: %s\n", #call, __FILE__, __LINE__,          \
-//                     cudaGetErrorString(err));                                                      \
-//             exit(EXIT_FAILURE);                                                                    \
-//         }                                                                                          \
-//     }
-
 #ifndef FAKE_CURAND
 #include <curand_kernel.h>
 #else
@@ -30,8 +18,10 @@ struct curandState {
 };
 
 // Fake curand_init implementation
-__device__ void curand_init(unsigned long seed, unsigned long long sequence,
-                            unsigned long long offset, curandState *state) {
+__device__ void curand_init(unsigned long seed,
+                            unsigned long long sequence,
+                            unsigned long long offset,
+                            curandState *state) {
     state->seed = seed;
     state->sequence = sequence;
     state->offset = offset;
@@ -73,8 +63,14 @@ __global__ void setup_rand_kernel(curandState *state, int N, unsigned long seed)
 
 // CUDA kernel for Ising model simulation (checkerboard pattern, even sites)
 template <typename T>
-__global__ void ising_kernel_even(T *spins, T *new_spins, int N, T beta, T J, T B_field,
-                                  curandState *rand_states, unsigned long long *accepted) {
+__global__ void ising_kernel_even(T *spins,
+                                  T *new_spins,
+                                  int N,
+                                  T beta,
+                                  T J,
+                                  T B_field,
+                                  curandState *rand_states,
+                                  unsigned long long *accepted) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     int idy = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -117,8 +113,14 @@ __global__ void ising_kernel_even(T *spins, T *new_spins, int N, T beta, T J, T 
 
 // CUDA kernel for Ising model simulation (checkerboard pattern, odd sites)
 template <typename T>
-__global__ void ising_kernel_odd(T *spins, T *new_spins, int N, T beta, T J, T B_field,
-                                 curandState *rand_states, unsigned long long *accepted) {
+__global__ void ising_kernel_odd(T *spins,
+                                 T *new_spins,
+                                 int N,
+                                 T beta,
+                                 T J,
+                                 T B_field,
+                                 curandState *rand_states,
+                                 unsigned long long *accepted) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     int idy = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -211,8 +213,15 @@ __global__ void compute_hamiltonian_kernel(const T *spins, T *partial_sums, int 
     }
 }
 
-void simulate_ising_gpu(real_t *spins, real_t *result, int N, int equil_steps, int M_sweep,
-                        real_t beta, real_t J, real_t B_field, real_t *acceptancy) {
+void simulate_ising_gpu(real_t *spins,
+                        real_t *result,
+                        int N,
+                        int equil_steps,
+                        int M_sweep,
+                        real_t beta,
+                        real_t J,
+                        real_t B_field,
+                        real_t *acceptancy) {
     // Device memory allocation
     real_t *d_spins, *d_new_spins;
     size_t size = N * N * sizeof(real_t);
