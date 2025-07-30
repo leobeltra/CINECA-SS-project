@@ -5,10 +5,10 @@ CXXFLAGS = -Wall -I../include -I/usr/local/cuda-12.9/include
 NVCCFLAGS = -arch=sm_89 -I../include
 
 # Output executable
-TARGET_BASE = naive
+TARGET_BASE = naive tiles2d
 
 # Source files
-CPP_SOURCES = main.cpp cpu.cpp
+CPP_SOURCES = main.cpp cpu.cpp $(wildcard utils/*.cpp)
 
 # Default target
 TARGET = $(addsuffix .exe,$(TARGET_BASE))
